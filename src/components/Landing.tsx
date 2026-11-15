@@ -137,7 +137,6 @@ function Home({ onGetStarted }: Props) {
           <div className="site-rail" aria-hidden><i /></div>
           {PROOF.map((p, k) => (
             <div key={p.title} className={`site-chapter tint-${p.tint}`}>
-              <span className="site-dot" aria-hidden><Icon n="clock" size={14} /></span>
               <Grid columns={wide ? 2 : 1} gap={wide ? 10 : 6} align="center">
                 <VStack gap={3} hAlign="start" className={wide && k % 2 ? 'site-order-2' : undefined}>
                   <span className="site-time-chip">{p.when}</span>
