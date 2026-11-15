@@ -13,6 +13,7 @@ import { HelpPage } from './Help.tsx';
 import { BoardDemo, HeroDemo, PageDemo, ReminderDemo, ThreadDemo } from './HomeDemos.tsx';
 import { Mascot } from './SiteShots.tsx';
 import { SiteFrame, SiteSection, scrollToHash, useRoute } from './Site.tsx';
+import { CancelledMeeting, DashedArrow, Doodle, HeroChecklist, StickyBoard, StickyNote, Underline, type NoteTint } from './Notebook.tsx';
 
 interface Props {
   onGetStarted: () => void;
@@ -63,6 +64,13 @@ const TEAMS: { team: string; tint: Tint; rows: { icon: IconName; label: string; 
     { icon: 'clock', label: 'Reminder', text: '/remind keeps a follow-up from being forgotten.' } ] },
 ];
 
+// How each step's note is stuck to the page.
+const STEP_NOTES: { tint: NoteTint; tilt: number; fixing: 'pin' | 'tape' | 'clip' }[] = [
+  { tint: 'yellow', tilt: -3, fixing: 'pin' },
+  { tint: 'pink', tilt: 2, fixing: 'tape' },
+  { tint: 'green', tilt: -1.5, fixing: 'clip' },
+];
+
 const STEPS: [string, string][] = [
   ['Create the workspace', 'Sign in with email, Google, GitHub or Microsoft.'],
   ['Share the invite link', 'People join with one link.'],
@@ -71,6 +79,7 @@ const STEPS: [string, string][] = [
 
 function Home({ onGetStarted }: Props) {
   const wide = useMediaQuery('(min-width: 860px)');
+  const touch = useMediaQuery('(pointer: coarse)');
   const [team, setTeam] = useState(0);
   useEffect(() => { scrollToHash(); }, []);
   // The timeline's line draws itself as the page scrolls: --p goes 0 to 1 across the section.
@@ -90,6 +99,14 @@ function Home({ onGetStarted }: Props) {
   return (
     <SiteFrame route="home" onGetStarted={onGetStarted}>
       <VStack as="section" hAlign="center" className="site-hero">
+        {/* The notebook around the headline: two notes stuck on the page and a few pen marks. Wide screens only. */}
+        <div className="nb-hero-notes">
+          <CancelledMeeting enter={0.5} />
+          <HeroChecklist enter={0.75} />
+          <Doodle kind="asterisk" className="nb-dd-1" />
+          <Doodle kind="cross" className="nb-dd-2" />
+          <Doodle kind="burst" className="nb-dd-3" />
+        </div>
         <SiteSection paddingBlockStart={10} paddingBlockEnd={10} gap={8}>
           <VStack gap={4} hAlign="center" className="site-rise">
             <Heading level={1} type="display-1" weight="semibold" justify="center" textWrap="balance">Team management, <span className="site-mark">minus the meetings.</span></Heading>
@@ -99,7 +116,15 @@ function Home({ onGetStarted }: Props) {
               <Button label="Follow a day in Relay" variant="secondary" size="lg" onClick={() => scrollToHash('#proof', true)} />
             </HStack>
           </VStack>
-          <HeroDemo />
+          <div className="nb-hero-stage">
+            <HeroDemo />
+            {wide && (
+              <div className="nb-hero-aside" aria-hidden>
+                <StickyNote tint="yellow" tilt={-4} fixing="tape" enter={1.1} className="nb-hero-note">Type a question in the box. Relay Bot answers right in the channel</StickyNote>
+                <DashedArrow className="nb-hero-arrow" />
+              </div>
+            )}
+          </div>
         </SiteSection>
       </VStack>
 
@@ -148,20 +173,29 @@ function Home({ onGetStarted }: Props) {
         </div>
       </SiteSection>
 
+      <SiteSection id="board" gap={6} paddingBlockStart={10} paddingBlockEnd={10}>
+        <VStack gap={2} hAlign="center">
+          <Text type="supporting" justify="center">Try the board</Text>
+          <Heading level={2} type="display-3" weight="semibold" justify="center" textWrap="balance">Move a note. The whole channel sees it</Heading>
+          <Underline />
+        </VStack>
+        <StickyBoard />
+        <Text type="supporting" justify="center" color="secondary">{touch ? 'Tap a note to move it to the next column' : 'Drag a note to another column, or focus one and use the arrow keys'}</Text>
+      </SiteSection>
+
       <SiteSection paddingBlockStart={10} paddingBlockEnd={10} gap={8}>
         <VStack gap={3} hAlign="center">
           <Text type="supporting" justify="center">Your turn</Text>
           <Heading level={2} type="display-3" weight="semibold" justify="center" textWrap="balance">Your Monday starts in three steps</Heading>
         </VStack>
-        <Grid columns={wide ? 3 : 1} gap={wide ? 8 : 5}>
+        <div className="nb-steps">
           {STEPS.map(([title, text], k) => (
-            <VStack key={title} gap={2} hAlign="start">
-              <Text type="supporting" hasTabularNumbers>Step {k + 1}</Text>
-              <Text weight="semibold">{title}</Text>
-              <Text color="secondary">{text}</Text>
-            </VStack>
-          ))}
-        </Grid>
+            <StickyNote key={title} {...STEP_NOTES[k]} lined={k === 2} className="nb-step">
+              <span className="nb-step-num">{k + 1}</span>
+              <span className="nb-step-title">{title}</span>
+              <span className="nb-step-text">{text}</span>
+            </StickyNote>
+          ))}        </div>
         <VStack hAlign="center" gap={4}>
           <Mascot say="See you in #general" />
           <Button label="Get started" variant="primary" size="lg" onClick={onGetStarted} />

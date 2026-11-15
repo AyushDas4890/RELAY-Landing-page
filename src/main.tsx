@@ -11,6 +11,7 @@ import './apple-shell.css';
 import './apple-public.css';
 import './apple-app.css';
 import './site.css';
+import './notebook.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

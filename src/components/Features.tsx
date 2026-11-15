@@ -16,6 +16,7 @@ import { ENTER, EXIT, T, arrive, pointAt, typing } from '../motion.ts';
 import { Icon, type IconName } from './Icon.tsx';
 import { RouteLink, SiteFrame, SiteSection, scrollToHash, type FeatureRoute, type Route } from './Site.tsx';
 import { Mascot } from './SiteShots.tsx';
+import { MarginNotes, type MarginNote } from './Notebook.tsx';
 import '../features.css';
 
 // Point at an element on the canvas: the cursor glides there, then presses it.
@@ -449,6 +450,30 @@ const PAGE_DEFS: Record<FeatureRoute, PageDef> = {
 
 const NEXT_LABEL: Record<FeatureRoute, string> = { overview: 'Overview', huddles: 'Huddles', workflows: 'Workflows', search: 'Search' };
 
+// The notes stuck in each page's margins. Every line is taken from that page's own film or copy.
+const PAGE_NOTES: Record<FeatureRoute, { left: MarginNote; right: MarginNote }> = {
+  overview: {
+    left: { tint: 'pink', tilt: -5, fixing: 'tape', kicker: '#launch · 2 replies', title: 'One question on pricing', lines: ['Pricing stays the same as v1'] },
+    right: { tint: 'green', tilt: 3, fixing: 'pin', lined: true, kicker: 'Recap of #launch', title: 'Ship at 4 PM', lines: ['Copy approved', 'Priya owns QA'] },
+  },
+  huddles: {
+    left: { tint: 'blue', tilt: -4, fixing: 'clip', kicker: 'Huddle notes · 18 min', title: 'Ken, Maya, Priya', lines: ['Ken: update the step 2 copy today'] },
+    right: { tint: 'yellow', tilt: 4, fixing: 'pin', kicker: '/huddle', title: 'Up to 6 voices', lines: ['Screen share in one click'] },
+  },
+  workflows: {
+    left: { tint: 'yellow', tilt: -4, fixing: 'pin', kicker: 'Weekdays 9:30 · #general', title: 'Daily standup', lines: ['Posted by Relay Bot'] },
+    right: { tint: 'pink', tilt: 4, fixing: 'tape', kicker: '!incident sev1', title: 'Page the on-call now', lines: ['and open a huddle here'] },
+  },
+  search: {
+    left: { tint: 'yellow', tilt: -5, fixing: 'tape', kicker: 'Ctrl K', title: 'When do we ship?', lines: ['End it with a question mark'] },
+    right: { tint: 'green', tilt: 3, fixing: 'pin', lined: true, kicker: 'Best answer · Priya in #launch', title: 'We ship at 4 PM if QA passes' },
+  },
+};
+
+// Feature cards are sticky notes, in turn.
+const CARD_TINTS = ['yellow', 'pink', 'green', 'blue'] as const;
+const paper = (k: number) => `nb-paper nb-${CARD_TINTS[k % CARD_TINTS.length]}`;
+
 // What each page's closing mascot says.
 const MASCOT_SAYS: Record<FeatureRoute, string> = {
   overview: 'Say hi in #general',
@@ -484,6 +509,8 @@ function Actions({ onGetStarted, center }: { onGetStarted: () => void; center?: 
 function Hero({ def, page, wide, onGetStarted }: PageProps) {
   const centred = page === 'overview' || page === 'search';
   return (
+    <>
+    <MarginNotes {...PAGE_NOTES[page]} split={!centred} />
     <SiteSection paddingBlockStart={10} paddingBlockEnd={6} gap={8}>
       {centred ? (
         <VStack gap={4} hAlign="center" className="site-rise">
@@ -516,6 +543,7 @@ function Hero({ def, page, wide, onGetStarted }: PageProps) {
       )}
       <FilmCard def={def} page={page} />
     </SiteSection>
+    </>
   );
 }
 
@@ -549,7 +577,7 @@ function Steps({ def, page, wide }: PageProps) {
               <Text color="secondary">{d.text}</Text>
               <Points points={d.points} />
             </VStack>
-            <Card variant="purple" padding={3}><StepClip def={def} page={page} d={d} /></Card>
+            <Card variant="purple" padding={3} className={paper(k)}><StepClip def={def} page={page} d={d} /></Card>
           </Grid>
         ))}
       </SiteSection>
@@ -560,8 +588,8 @@ function Steps({ def, page, wide }: PageProps) {
       <SiteSection gap={6}>
         {head}
         <Grid columns={wide ? 2 : 1} gap={4}>
-          {def.details.map((d) => (
-            <Card key={d.title} variant="purple" padding={5}>
+          {def.details.map((d, k) => (
+            <Card key={d.title} variant="purple" padding={5} className={`${paper(k)} nb-tilt`}>
               <VStack gap={4}>
                 <VStack gap={1}><Text type="supporting">{d.eyebrow}</Text><Heading level={3}>{d.title}</Heading></VStack>
                 <Text color="secondary">{d.text}</Text>
@@ -602,9 +630,9 @@ function Steps({ def, page, wide }: PageProps) {
     <SiteSection gap={6}>
       {head}
       <Grid columns={wide ? 4 : 1} gap={4}>
-        {def.details.map((d) => (
+        {def.details.map((d, k) => (
           <VStack key={d.title} gap={3}>
-            <Card variant="purple" padding={2}><StepClip def={def} page={page} d={d} /></Card>
+            <Card variant="purple" padding={2} className={paper(k)}><StepClip def={def} page={page} d={d} /></Card>
             <Text weight="medium">{d.title}</Text>
             <Text type="supporting">{d.text}</Text>
           </VStack>
@@ -669,7 +697,7 @@ function Facts({ def, page, wide }: PageProps) {
         </VStack>
         <Grid columns={wide ? 3 : 1} gap={3}>
           {def.facts.map((f, k) => (
-            <Card key={f.title} padding={4} variant="purple">
+            <Card key={f.title} padding={4} variant="purple" className={`${paper(k)} nb-tilt`}>
               <VStack gap={2} hAlign="start">
                 <Token size="sm" label={RECIPE_CODES[k] ?? f.title} />
                 <Text weight="medium">{f.title}</Text>

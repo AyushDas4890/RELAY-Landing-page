@@ -1,0 +1,408 @@
+/* Notebook look for the public site (home, feature pages, help). Layered on top of site.css, which still
+   owns layout. The world is a team's shared notebook: squared paper, torn strips of coloured grid paper,
+   sticky notes held with washi tape, and one hand-drawn mark (a pen asterisk) used as the signature.
+   Tints come from Astryx tokens. Raw values: the paper, its grid line, the ink, the two tape colours (the
+   Astryx yellow and blue backgrounds, made translucent) and the grid lines on the torn strips. */
+
+.site {
+  --nb-paper: #fbf9f4;
+  --nb-grid: rgba(64, 120, 190, .13);
+  --nb-cell: 24px;
+  --nb-ink: #1b1b1b;
+  --nb-hand: 'Patrick Hand', 'Comic Neue', var(--font-family-body);
+  --nb-tape: rgba(250, 225, 158, .82);
+  --nb-tape-blue: rgba(185, 215, 255, .85);
+  --nb-tear: polygon(0% 4%, 2.5% 2.2%, 5% .5%, 7.5% 3%, 10% 1.8%, 12.5% 2%, 15% 2.3%, 17.5% 3.5%, 20% 2.4%, 22.5% 3.6%, 25% 1.1%, 27.5% 3.1%, 30% 4.6%, 32.5% .3%, 35% 2%, 37.5% 2.9%, 40% 2.7%, 42.5% .6%, 45% 4.2%, 47.5% 1.9%, 50% .7%, 52.5% 2.2%, 55% 3.8%, 57.5% 3.9%, 60% 2.5%, 62.5% 1.8%, 65% 3.8%, 67.5% 2.8%, 70% 1.7%, 72.5% 2.2%, 75% 4.7%, 77.5% 1.1%, 80% .7%, 82.5% 5.9%, 85% 1.8%, 87.5% .9%, 90% 4.2%, 92.5% 1.3%, 95% .6%, 97.5% 5.1%, 100% 1.4%, 100% 96.6%, 97.5% 99.7%, 95% 96.3%, 92.5% 99%, 90% 94.5%, 87.5% 98.1%, 85% 99.1%, 82.5% 97.6%, 80% 96.4%, 77.5% 97%, 75% 97.4%, 72.5% 99.5%, 70% 97.1%, 67.5% 98.2%, 65% 99.6%, 62.5% 99.8%, 60% 96.4%, 57.5% 97.3%, 55% 97.4%, 52.5% 96.2%, 50% 96.7%, 47.5% 98.2%, 45% 98%, 42.5% 98.2%, 40% 94.6%, 37.5% 98.2%, 35% 98.2%, 32.5% 98.9%, 30% 97.1%, 27.5% 97%, 25% 99.5%, 22.5% 98.9%, 20% 94.9%, 17.5% 96.6%, 15% 96.1%, 12.5% 96.3%, 10% 94.6%, 7.5% 97%, 5% 97.4%, 2.5% 97.8%, 0% 97.9%);
+  /* The pen asterisk, drawn as four uneven strokes. */
+  --nb-cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M20 3 L19 37'/%3E%3Cpath d='M4 13 L36 27'/%3E%3Cpath d='M6 29 L34 10'/%3E%3C/svg%3E");
+  background: var(--nb-paper);
+}
+
+/* Squared paper under every public page. It sits on the page, so it scrolls with the content. */
+.site-page {
+  background-color: var(--nb-paper);
+  background-image:
+    linear-gradient(var(--nb-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--nb-grid) 1px, transparent 1px);
+  background-size: var(--nb-cell) var(--nb-cell);
+  background-position: -1px -1px;
+  overflow-x: clip;
+}
+
+/* The aurora's three blobs become two torn strips of coloured grid paper in the top corners. */
+.site-aurora { height: 100%; }
+.site-aurora i {
+  filter: none; opacity: 1; border-radius: 0; animation: none; aspect-ratio: auto; max-width: none;
+  width: 46vw; height: 132px;
+  clip-path: var(--nb-tear);
+  background-color: var(--color-background-blue);
+  background-image:
+    linear-gradient(rgba(0, 57, 120, .22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 57, 120, .22) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.site-aurora i:nth-child(1) { left: -6vw; top: -40px; transform: rotate(-4deg);
+  background-color: var(--color-background-blue);
+  background-image:
+    linear-gradient(rgba(0, 57, 120, .22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 57, 120, .22) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.site-aurora i:nth-child(2) {
+  left: auto; right: -9vw; top: 150px; width: 24vw; height: 110px; transform: rotate(5deg);
+  background-color: var(--color-background-yellow);
+  background-image:
+    linear-gradient(rgba(75, 57, 0, .2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(75, 57, 0, .2) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.site-aurora i:nth-child(3) { display: none; }
+/* Inner pages put content in the top right, so the second strip is home only. */
+.site-page:not(:has(.site-hero)) .site-aurora i:nth-child(2) { display: none; }
+/* Inner pages start with a left-aligned eyebrow, so only the strip's torn edge shows above it. */
+.site-page:not(:has(.site-hero)) .site-aurora i:nth-child(1) { top: -92px; }
+@media (max-width: 720px) {
+  .site-aurora i:nth-child(1) { width: 80vw; height: 96px; top: -48px; }
+  .site-aurora i:nth-child(2) { display: none; }
+}
+
+/* Hand lettering for headings only. Body copy stays in Figtree so paragraphs read easily. */
+.site-page :is(h1, h2, h3) { font-family: var(--nb-hand); font-weight: 400; letter-spacing: 0; color: var(--nb-ink); }
+/* Patrick Hand runs small for its size, so the home page's headings go up a step; inner pages keep Astryx sizes. */
+.site-page:has(.site-hero) h1 { font-size: clamp(44px, 6vw, 76px); line-height: 1.02; }
+.site-page:has(.site-hero) h2 { font-size: clamp(34px, 4vw, 48px); line-height: 1.08; }
+.site-page:has(.site-hero) h3 { font-size: clamp(28px, 3vw, 36px); line-height: 1.1; }
+.site-page:not(:has(.site-hero)) h3 { font-size: 22px; line-height: 1.2; }
+
+/* The headline swipe becomes a marker stroke: skewed, a little uneven, pink. */
+.site-mark::before {
+  left: -.08em; right: -.12em; bottom: .02em; height: .38em;
+  border-radius: 2px 6px 3px 8px;
+  background: var(--color-background-pink);
+  transform-origin: left; transform: scaleX(0) skewX(-8deg) rotate(-1deg);
+}
+@keyframes site-swipe { to { transform: scaleX(1) skewX(-8deg) rotate(-1deg); } }
+@media (prefers-reduced-motion: reduce) { .site-mark::before { transform: skewX(-8deg) rotate(-1deg); } }
+
+/* Signature: the pen asterisk beside the home page's three section headings, nowhere else. */
+.site-page:has(.site-hero) .site-section h2::after {
+  content: ''; display: inline-block; width: .62em; height: .62em; margin-inline-start: .28em; vertical-align: .12em;
+  background: var(--nb-ink); -webkit-mask: var(--nb-cross) center / contain no-repeat; mask: var(--nb-cross) center / contain no-repeat;
+  transform: rotate(8deg);
+}
+
+/* The hero demo is the product on the desk: crisp UI, an ink outline, two strips of tape at the top. */
+.site-hero .site-stage .home-window { border: 2px solid var(--nb-ink); box-shadow: 6px 6px 0 rgba(27, 27, 27, .08); }
+.site-hero .site-stage::before,
+.site-hero .site-stage::after {
+  content: ''; position: absolute; z-index: 1; bottom: -12px; width: 120px; height: 30px;
+  background: var(--nb-tape); clip-path: polygon(3% 0, 97% 6%, 100% 100%, 0 94%);
+  pointer-events: none;
+}
+/* Tape holds the bottom corners, clear of the window chrome and of the bot crawling along the top edge. */
+.site-hero .site-stage::before { right: -30px; transform: rotate(-36deg); }
+.site-hero .site-stage::after { left: -30px; transform: rotate(36deg); background: var(--nb-tape-blue); }
+
+/* Time chips and labels are scraps of tape with hand lettering. */
+.site-time-chip {
+  display: inline-block; padding: 2px var(--spacing-3); border-radius: 2px;
+  background: var(--nb-tape); box-shadow: none; color: var(--nb-ink);
+  font-family: var(--nb-hand); font-size: 18px; font-weight: 400;
+  transform: rotate(-2deg);
+}
+
+/* The Monday chapters are sticky notes: flat tint, perforated top edge, a strip of tape, a slight tilt. */
+.site-timeline { gap: var(--spacing-12); }
+.site-chapter {
+  border-radius: 3px;
+  border: 2px solid var(--nb-ink);
+  padding-top: calc(var(--spacing-8) + 10px);
+  box-shadow: 5px 6px 0 rgba(27, 27, 27, .07);
+}
+.site-chapter::before {
+  content: ''; position: absolute; left: 14px; right: 14px; top: 10px; height: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 3px, transparent 3.5px) 0 0 / 16px 8px repeat-x;
+}
+.site-timeline .site-chapter::after {
+  content: ''; position: absolute; top: -16px; left: 50%; width: 112px; height: 28px; margin-left: -56px;
+  background: var(--nb-tape-blue); clip-path: polygon(2% 4%, 98% 0, 100% 96%, 0 100%);
+}
+.site-timeline .site-chapter:nth-child(odd) { transform: rotate(-.6deg); }
+.site-timeline .site-chapter:nth-child(even) { transform: rotate(.5deg); }
+/* Demos inside a note stay level so the UI reads straight. */
+.site-timeline .site-chapter:nth-child(odd) > * { transform: rotate(.6deg); }
+.site-timeline .site-chapter:nth-child(even) > * { transform: rotate(-.5deg); }
+
+/* The scroll rail is a dashed pen line; the clock dots are inked circles. */
+.site-rail { width: 0; background: none; border-left: 2px dashed rgba(27, 27, 27, .35); }
+.site-rail i { left: -2px; width: 2px; background: var(--nb-ink); }
+.site-dot { background: var(--color-background-card); color: var(--nb-ink); border: 2px solid var(--nb-ink); box-shadow: 0 0 0 4px var(--nb-paper); }
+
+/* The team setup is a spiral notebook page: rings down the left edge, ruled lines behind the text. */
+.site-recipe {
+  position: relative;
+  padding-inline-start: calc(var(--spacing-8) + 28px);
+  background-image: repeating-linear-gradient(transparent 0 31px, rgba(27, 27, 27, .08) 31px 32px);
+  background-color: var(--tint);
+}
+.site-recipe::before {
+  content: ''; position: absolute; left: -12px; right: auto; top: 18px; bottom: 18px; width: 30px; height: auto;
+  background:
+    radial-gradient(circle at 18px 50%, var(--nb-paper) 5px, var(--nb-ink) 5.5px 7.5px, transparent 8px) 0 0 / 30px 28px repeat-y;
+}
+
+/* Footer: a torn edge where the page meets it, on plain paper. */
+.site-page > footer {
+  background: var(--color-background-muted) !important;
+  clip-path: polygon(0 18px, 6% 6px, 13% 16px, 21% 4px, 29% 14px, 37% 2px, 46% 15px, 54% 5px, 63% 17px, 71% 3px, 80% 14px, 88% 4px, 95% 15px, 100% 6px, 100% 100%, 0 100%);
+  padding-top: calc(var(--spacing-10) + 18px) !important;
+}
+
+/* ===== Sticky notes (Notebook.tsx) ===== */
+.site { --nb-pin: #e8578c; }
+.nb-note {
+  position: relative; display: flex; flex-direction: column; gap: var(--spacing-2);
+  padding: 30px var(--spacing-5) var(--spacing-5);
+  background: var(--nb-tint); color: var(--nb-ink); border: 0; border-radius: 2px;
+  box-shadow: 3px 4px 0 rgba(27, 27, 27, .08), 0 1px 0 rgba(27, 27, 27, .06);
+  font: inherit; text-align: left; cursor: grab; touch-action: none; user-select: none;
+}
+/* The perforated top edge every note in the decks has. */
+.nb-note::before {
+  content: ''; position: absolute; left: 10px; right: 10px; top: 9px; height: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 2.6px, transparent 3px) 0 0 / 13px 8px repeat-x;
+}
+.nb-note.is-touch { touch-action: auto; cursor: pointer; }
+.nb-note.is-lined { background-image: repeating-linear-gradient(transparent 0 27px, rgba(0, 80, 60, .16) 27px 28px); background-position: 0 30px; }
+.nb-note:focus-visible { outline: 3px solid var(--nb-ink); outline-offset: 3px; }
+.nb-yellow { --nb-tint: var(--color-background-yellow); }
+.nb-pink { --nb-tint: var(--color-background-pink); }
+.nb-green { --nb-tint: var(--color-background-green); }
+.nb-blue { --nb-tint: var(--color-background-blue); }
+.nb-purple { --nb-tint: var(--color-background-purple); }
+
+.nb-fix { position: absolute; pointer-events: none; }
+.nb-fix-pin { top: -16px; left: 50%; margin-left: -14px; }
+.nb-fix-tape { top: -12px; left: 50%; width: 96px; height: 26px; margin-left: -48px; background: var(--nb-tape-blue); clip-path: polygon(3% 0, 97% 6%, 100% 100%, 0 94%); transform: rotate(-3deg); }
+.nb-fix-clip { top: -22px; left: 22px; transform: rotate(-8deg); }
+/* The pin dips when you reach for the note. */
+.nb-pin { display: block; transition: transform .2s cubic-bezier(.16, 1, .3, 1); }
+.nb-note:hover .nb-pin { transform: translateY(-3px) rotate(-10deg); }
+
+/* Hero annotation: a note and a dashed arrow left of the demo, pointing at its input. */
+.nb-hero-stage { position: relative; width: 100%; display: flex; flex-direction: column; }
+.nb-hero-aside { display: none; }
+@media (min-width: 1240px) {
+  /* The note sits in the left margin beside the window, clear of its sidebar, and the arrow curls under
+     the window's edge to the input. */
+  .nb-hero-aside { display: block; position: absolute; z-index: 3; left: max(calc(552px - 50vw), calc(50% - 36vw - 176px)); bottom: 150px; /* never closer than 12px to the viewport edge (column is 1080 wide) */ width: 160px; pointer-events: none; }
+  .nb-hero-note { pointer-events: auto; width: 156px; font-family: var(--nb-hand); font-size: 18px; line-height: 1.15; padding-top: 32px; }
+  .nb-hero-arrow { position: absolute; left: 60px; top: calc(100% - 4px); transform: scale(1.3); transform-origin: 0 0; }
+  .nb-hero-arrow path { vector-effect: non-scaling-stroke; }
+}
+
+/* Hero notes around the headline: a cancelled meeting on the left, Monday's checklist on the right
+   (stuck over the yellow torn strip), and three pen marks. They only show where the margins can hold them. */
+.site-hero { position: relative; }
+.nb-hero-notes { display: none; }
+@media (min-width: 1180px) {
+  .nb-hero-notes { display: block; position: absolute; inset: 0 0 auto 0; height: 420px; z-index: 2; pointer-events: none; }
+  .nb-hero-notes > * { position: absolute; pointer-events: auto; }
+  /* Both notes end above the demo window's top edge, where Relay Bot's robot crawls. */
+  .nb-hero-meeting { left: max(20px, calc(50% - 690px)); top: 92px; width: 196px; }
+  .nb-hero-list { right: max(20px, calc(50% - 690px)); top: 60px; width: 218px; }
+  .nb-dd-1 { left: max(232px, calc(50% - 470px)); top: 64px; pointer-events: none; }
+  .nb-dd-2 { right: max(250px, calc(50% - 450px)); top: 300px; width: 26px; height: 26px; pointer-events: none; }
+  .nb-dd-3 { left: calc(50% - 300px); top: 26px; transform: rotate(-28deg); pointer-events: none; }
+}
+.nb-hand-title { font-family: var(--nb-hand); font-size: 26px; line-height: 1; }
+.nb-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.nb-list button { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: var(--spacing-2); width: 100%; padding: 2px 0; border: 0; background: none; color: inherit; font-family: var(--nb-hand); font-size: 18px; line-height: 1.2; text-align: left; cursor: pointer; }
+.nb-list button em { font-style: normal; font-family: var(--font-family-body); font-size: 12px; color: var(--color-text-secondary); }
+.nb-list button.is-done span { color: var(--color-text-secondary); }
+.nb-list button:focus-visible { outline: 2px solid var(--nb-ink); outline-offset: 2px; border-radius: 2px; }
+.nb-tick { width: 20px; height: 20px; overflow: visible; }
+.nb-meeting-time { font-family: var(--font-family-code); font-size: 12px; color: var(--color-text-secondary); }
+.nb-meeting-title { position: relative; align-self: flex-start; font-family: var(--nb-hand); font-size: 24px; line-height: 1.05; }
+.nb-meeting-note { font-family: var(--nb-hand); font-size: 18px; line-height: 1.15; }
+.nb-doodle { overflow: visible; }
+@media (min-width: 1240px) {
+}
+
+/* The task board: a white board with three ruled columns, notes stuck on. */
+.nb-board { position: relative; border: 2px solid var(--nb-ink); border-radius: 4px; background: var(--color-background-card); box-shadow: 6px 6px 0 rgba(27, 27, 27, .07); }
+.nb-board-head { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-3) var(--spacing-5); border-bottom: 2px solid var(--nb-ink); font-family: var(--nb-hand); font-size: 22px; }
+.nb-board-count { font-family: var(--font-family-code); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+.nb-board-cols { display: grid; grid-template-columns: repeat(3, 1fr); }
+.nb-col { min-height: 380px; padding: var(--spacing-4) var(--spacing-5) var(--spacing-8); }
+.nb-col + .nb-col { border-left: 2px dashed rgba(27, 27, 27, .22); }
+.nb-col-label { margin-bottom: var(--spacing-5); font-family: var(--nb-hand); font-size: 24px; }
+.nb-col-label span { margin-left: var(--spacing-1); font-family: var(--font-family-code); font-size: 13px; color: var(--color-text-secondary); }
+.nb-col-notes { display: grid; gap: var(--spacing-5); align-content: start; }
+.nb-col-empty { display: grid; place-items: center; height: 96px; border: 2px dashed rgba(27, 27, 27, .18); border-radius: 4px; color: var(--color-text-secondary); font-family: var(--nb-hand); font-size: 18px; }
+.nb-card { min-height: 104px; justify-content: space-between; }
+.nb-card-title { position: relative; align-self: flex-start; font-family: var(--nb-hand); font-size: 22px; line-height: 1.1; }
+.nb-strike { position: absolute; left: -4px; right: -4px; top: 50%; width: calc(100% + 8px); height: 12px; margin-top: -6px; overflow: visible; }
+.nb-card-owner { display: inline-flex; align-items: center; gap: var(--spacing-2); font-size: 13px; color: var(--color-text-secondary); }
+@media (max-width: 720px) {
+  .nb-board-cols { grid-template-columns: 1fr; }
+  .nb-col { min-height: 0; padding-bottom: var(--spacing-5); }
+  .nb-col + .nb-col { border-left: 0; border-top: 2px dashed rgba(27, 27, 27, .22); }
+}
+
+/* Three steps: three notes stuck in a row, with a dashed arrow sweeping under them. */
+.nb-steps { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-10); padding-top: var(--spacing-4); }
+.nb-step { min-height: 190px; }
+.nb-step-num { font-family: var(--nb-hand); font-size: 44px; line-height: 1; }
+.nb-step-title { font-weight: 600; }
+.nb-step-text { color: var(--color-text-secondary); }
+/* The board heading carries the pen underline instead of the asterisk: one mark per heading. */
+.site-page:has(.site-hero) #board h2::after { display: none; }
+@media (max-width: 860px) { .nb-steps { grid-template-columns: 1fr; gap: var(--spacing-8); } }
+
+.nb-underline { display: block; margin-top: -4px; overflow: visible; }
+
+/* ===== Opening (PageIntro.tsx) =====
+   It sits outside .site and above any app theme, so it carries its own copy of the notebook palette
+   (the Astryx light-mode values) and is always light. */
+.pi {
+  --nb-paper: #fbf9f4; --nb-grid: rgba(64, 120, 190, .13); --nb-ink: #1b1b1b; --nb-pin: #e8578c;
+  --nb-hand: 'Patrick Hand', 'Comic Neue', system-ui, sans-serif;
+  --nb-tape: rgba(250, 225, 158, .82); --nb-tape-blue: rgba(185, 215, 255, .85);
+  --color-background-yellow: #fae19e; --color-background-pink: #ffc0d7; --color-background-green: #bce0bb;
+  --color-background-blue: #b9d7ff; --color-background-purple: #f7d5ff; --color-text-secondary: #474747;
+  position: fixed; inset: 0; z-index: 9999; overflow: hidden; color-scheme: light; color: var(--nb-ink);
+  background-color: var(--nb-paper);
+  background-image: linear-gradient(var(--nb-grid) 1px, transparent 1px), linear-gradient(90deg, var(--nb-grid) 1px, transparent 1px);
+  background-size: 24px 24px; background-position: -1px -1px;
+  font-family: 'Inter', system-ui, sans-serif; cursor: default; touch-action: none; perspective: 1200px;
+}
+.pi-strip {
+  position: absolute; height: 150px; width: 52vw; clip-path: polygon(0% 4%, 5% .5%, 10% 1.8%, 15% 2.3%, 20% 2.4%, 25% 1.1%, 30% 4.6%, 35% 2%, 40% 2.7%, 45% 4.2%, 50% .7%, 55% 3.8%, 60% 2.5%, 65% 3.8%, 70% 1.7%, 75% 4.7%, 80% .7%, 85% 1.8%, 90% 4.2%, 95% .6%, 100% 1.4%, 100% 96.6%, 95% 96.3%, 90% 94.5%, 85% 99.1%, 80% 96.4%, 75% 97.4%, 70% 97.1%, 65% 99.6%, 60% 96.4%, 55% 97.4%, 50% 96.7%, 45% 98%, 40% 94.6%, 35% 98.2%, 30% 97.1%, 25% 99.5%, 20% 94.9%, 15% 96.1%, 10% 94.6%, 5% 97.4%, 0% 97.9%);
+  background-size: 28px 28px;
+}
+.pi-strip-l { left: -6vw; top: -40px; rotate: -4deg; background-color: var(--color-background-blue);
+  background-image: linear-gradient(rgba(0, 57, 120, .22) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 57, 120, .22) 1px, transparent 1px); }
+.pi-strip-r { right: -8vw; bottom: -30px; width: 40vw; rotate: 5deg; background-color: var(--color-background-yellow);
+  background-image: linear-gradient(rgba(75, 57, 0, .2) 1px, transparent 1px), linear-gradient(90deg, rgba(75, 57, 0, .2) 1px, transparent 1px); }
+
+/* Orbit notes are placed from the centre of the screen. */
+.pi-orbit { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+.pi-note { position: absolute; left: -95px; top: -60px; width: 190px; cursor: inherit; touch-action: none; }
+.pi-kicker { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--color-text-secondary); }
+.pi-text { font-family: var(--nb-hand); font-size: 22px; line-height: 1.1; }
+
+/* The logo note in the middle. */
+.pi-stage { position: absolute; inset: 0; display: grid; place-items: center; transform-style: preserve-3d; pointer-events: none; }
+.pi-logo-note {
+  position: relative; display: grid; justify-items: center; gap: 10px; width: 300px; padding: 44px 28px 32px;
+  background: var(--color-background-yellow); border-radius: 3px; transform-origin: 50% 0%;
+  box-shadow: 4px 6px 0 rgba(27, 27, 27, .1), 0 1px 0 rgba(27, 27, 27, .06);
+}
+.pi-logo-note::before {
+  content: ''; position: absolute; left: 12px; right: 12px; top: 12px; height: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 2.6px, transparent 3px) 0 0 / 13px 8px repeat-x;
+}
+.pi-logo-note .rl-mark path { fill: var(--nb-ink); }
+.pi-logo-note .rl-spark { display: none; }
+.pi-pin { position: absolute; top: -18px; left: 50%; margin-left: -14px; }
+.pi-word { font-family: var(--nb-hand); font-size: 64px; line-height: .9; }
+.pi-tag { font-family: var(--nb-hand); font-size: 20px; text-align: center; color: #3a3a3a; }
+.pi-burst { position: absolute; top: -26px; right: -30px; transform: rotate(20deg); }
+
+.pi-hint { position: absolute; left: 50%; bottom: 44px; display: grid; justify-items: center; gap: 4px; translate: -50% 0; font-family: var(--nb-hand); font-size: 20px; }
+.pi-progress { position: absolute; left: 50%; bottom: 22px; width: 200px; height: 8px; translate: -50% 0; overflow: visible; }
+
+@media (max-width: 720px) {
+  .pi-note { width: 150px; left: -75px; padding: 26px 14px 14px; }
+  .pi-text { font-size: 18px; }
+  .pi-logo-note { width: 240px; padding: 40px 20px 26px; }
+  .pi-word { font-size: 52px; }
+  .pi-strip { height: 100px; width: 80vw; }
+}
+
+/* ===== Inner pages (feature pages, help) ===== */
+
+/* Margin notes beside each page's opening. They live only in the gutter outside the 1080px column, so they
+   never cover copy or the film, which means they need a viewport of 1440px or wider. */
+.site .site-page > .nb-margin-notes { display: none; position: absolute; inset: 0 0 auto 0; height: 460px; z-index: 2; pointer-events: none; }
+@media (min-width: 1440px) { .site .site-page > .nb-margin-notes { display: block; } }
+.nb-margin-notes > * { position: absolute; pointer-events: auto; }
+.nb-margin-note { width: 166px; padding-inline: var(--spacing-4); }
+.nb-margin-note.is-left { left: max(12px, calc(50% - 724px)); top: 130px; }
+.nb-margin-note.is-right { right: max(12px, calc(50% - 724px)); top: 220px; }
+.nb-margin-notes.is-split .nb-margin-note.is-left { top: 290px; }
+.nb-margin-notes.is-split .nb-margin-note.is-right { top: 100px; }
+.nb-md-1 { left: calc(50% - 600px); top: 66px; pointer-events: none; }
+.nb-md-2 { right: calc(50% - 596px); top: 440px; width: 26px; height: 26px; pointer-events: none; }
+.nb-margin-notes.is-split .nb-md-2 { top: 40px; }
+.nb-margin-note .nb-meeting-title { font-size: 21px; }
+.nb-margin-note .nb-meeting-note { font-size: 17px; }
+
+/* Patrick Hand runs small, so inner-page titles go up a step too. */
+.site-page:not(:has(.site-hero)) h1 { font-size: clamp(40px, 4.4vw, 60px); line-height: 1.04; }
+.site-page:not(:has(.site-hero)) .site-section h2 { font-size: clamp(30px, 3vw, 40px); line-height: 1.1; }
+
+/* Cards on feature and help pages are sticky notes: tinted paper, an ink outline, punched holes on top. */
+.astryx-card.nb-paper {
+  position: relative; background: var(--nb-tint); border: 2px solid var(--nb-ink); border-radius: 3px;
+  box-shadow: 5px 6px 0 rgba(27, 27, 27, .07); padding-top: calc(var(--spacing-5) + 12px);
+}
+.astryx-card.nb-paper::before {
+  content: ''; position: absolute; left: 12px; right: 12px; top: 9px; height: 8px; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 2.6px, transparent 3px) 0 0 / 13px 8px repeat-x;
+}
+.nb-tilt:nth-child(4n+1) { rotate: -.8deg; }
+.nb-tilt:nth-child(4n+2) { rotate: .6deg; }
+.nb-tilt:nth-child(4n+3) { rotate: .5deg; }
+.nb-tilt:nth-child(4n) { rotate: -.6deg; }
+.nb-tilt { transition: rotate .25s cubic-bezier(.16, 1, .3, 1), translate .25s cubic-bezier(.16, 1, .3, 1); }
+.nb-tilt:hover { rotate: 0deg; translate: 0 -3px; }
+
+/* The feature film is the product on the desk, like the home demo: ink outline and two strips of tape. */
+.site-film { position: relative; border: 2px solid var(--nb-ink); box-shadow: 6px 6px 0 rgba(27, 27, 27, .08); overflow: visible !important; }
+.site-film::before, .site-film::after {
+  content: ''; position: absolute; z-index: 3; top: -14px; width: 120px; height: 30px; pointer-events: none;
+  background: var(--nb-tape); clip-path: polygon(3% 0, 97% 6%, 100% 100%, 0 94%);
+}
+.site-film::before { left: -26px; transform: rotate(-32deg); background: var(--nb-tape-blue); }
+.site-film::after { right: -26px; transform: rotate(32deg); }
+
+/* The closing card is a big yellow note with a pin. */
+.astryx-card.site-cta { position: relative; background: var(--color-background-yellow); border: 2px solid var(--nb-ink); border-radius: 3px; box-shadow: 6px 7px 0 rgba(27, 27, 27, .08); overflow: visible; rotate: -.4deg; }
+.astryx-card.site-cta::before {
+  content: ''; position: absolute; top: -14px; left: 50%; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, rgba(255, 255, 255, .7) 2.5px, transparent 3px), var(--nb-pin);
+  border: 2px solid var(--nb-ink); box-shadow: 2px 3px 0 rgba(27, 27, 27, .18);
+}
+
+/* The overview's plan band is a torn strip of tinted paper. */
+.site-section.tint-purple { clip-path: var(--nb-tear); padding-block: calc(var(--spacing-10) + 24px) !important; }
+
+/* Step numbers ("01") are written by hand. */
+.site-page .site-time { font-family: var(--nb-hand); font-size: 26px; line-height: 1; color: var(--nb-ink); }
+
+/* Section headings on inner pages get the pen double underline. */
+.site-page:not(:has(.site-hero)) .site-section h2:not(.site-prose h2) {
+  padding-bottom: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 18' fill='none' stroke='%231b1b1b' stroke-linecap='round'%3E%3Cpath d='M4 6 C 70 2, 160 3, 236 6' stroke-width='2.6'/%3E%3Cpath d='M22 14 C 90 10, 170 11, 226 13' stroke-width='2'/%3E%3C/svg%3E") left bottom / 150px 12px no-repeat;
+}
+.site-page:not(:has(.site-hero)) .site-section h2[class*='justify-center'], .site-page:not(:has(.site-hero)) .site-section [style*='center'] h2 { background-position: center bottom; }
+
+/* Help: each category name gets a marker swipe, and keyed code reads like a keycap. */
+.site-runsheet h2 { width: fit-content; padding: 0 4px !important; margin-inline-start: -4px; background: linear-gradient(transparent 58%, var(--color-background-yellow) 58% 92%, transparent 92%) !important; }
+
+/* Chapters 1 and 3 (even children: the rail is the first child) are held with a paper clip, not tape. */
+.site-timeline .site-chapter:nth-child(even)::after {
+  top: -26px; left: 40px; width: 24px; height: 62px; margin: 0; clip-path: none;
+  background: var(--nb-ink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 58'%3E%3Cpath d='M15 14 V44 a5 5 0 0 1 -10 0 V9 a7 7 0 0 1 14 0 V40' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 58'%3E%3Cpath d='M15 14 V44 a5 5 0 0 1 -10 0 V9 a7 7 0 0 1 14 0 V40' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: rotate(-10deg);
+}
+
+@media (max-width: 720px) {
+  .site-timeline .site-chapter:nth-child(n), .site-timeline .site-chapter:nth-child(n) > * { transform: none; }
+  .site-hero .site-stage::before, .site-hero .site-stage::after { width: 72px; height: 22px; bottom: -8px; }
+  .site-recipe { padding-inline-start: calc(var(--spacing-5) + 24px); }
+}

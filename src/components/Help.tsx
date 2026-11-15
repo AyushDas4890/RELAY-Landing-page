@@ -14,6 +14,7 @@ import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { ARTICLES, CATEGORIES, articleBySlug, searchArticles, type Article, type Block } from '../help.ts';
 import { SiteFrame, SiteSection, type Route } from './Site.tsx';
 import { Mascot } from './SiteShots.tsx';
+import { MarginNotes } from './Notebook.tsx';
 
 const slugFromPath = (path: string): string => path.replace(/^\/help\/?/, '').replace(/\/+$/, '');
 const hrefOf = (slug: string) => (slug ? `/help/${slug}` : '/help');
@@ -29,7 +30,7 @@ function Blocks({ blocks }: { blocks: Block[] }) {
       {blocks.map((b, i) =>
         'p' in b ? <Text key={i} as="p" display="block">{inline(b.p)}</Text>
         : 'h' in b ? <Heading key={i} level={2}>{b.h}</Heading>
-        : 'note' in b ? <Card key={i} variant="purple" padding={4}><Text color="secondary">{inline(b.note)}</Text></Card>
+        : 'note' in b ? <Card key={i} variant="purple" padding={4} className="nb-paper nb-yellow"><Text color="secondary">{inline(b.note)}</Text></Card>
         : 'ul' in b ? <ul key={i}>{b.ul.map((t, j) => <li key={j}><Text>{inline(t)}</Text></li>)}</ul>
         : <ol key={i}>{b.ol.map((t, j) => <li key={j}><Text>{inline(t)}</Text></li>)}</ol>,
       )}
@@ -85,7 +86,7 @@ export function HelpPage({ onGetStarted, signedIn }: { go: (r: Route) => void; o
                 <Heading level={1} type="display-3" weight="semibold">{article.title}</Heading>
                 <Text type="large" color="secondary">{article.summary}</Text>
                 <Blocks blocks={article.body} />
-                <Card variant="purple" padding={5}>
+                <Card variant="purple" padding={5} className="nb-paper nb-green">
                   <HStack gap={6} vAlign="center" justify="between" wrap="wrap">
                     <VStack gap={2} hAlign="start" maxWidth={420}>
                       <Text weight="semibold">Still stuck</Text>
@@ -101,6 +102,9 @@ export function HelpPage({ onGetStarted, signedIn }: { go: (r: Route) => void; o
         </SiteSection>
       ) : (
         <>
+          <MarginNotes split
+            left={{ tint: 'yellow', tilt: -4, fixing: 'tape', kicker: 'Stuck on something', title: 'Ask Relay Bot', lines: ['It answers from your own messages'] }}
+            right={{ tint: 'green', tilt: 3, fixing: 'pin', lined: true, kicker: 'Start here', title: 'Sign in and join a workspace' }} />
           <SiteSection paddingBlockStart={10} paddingBlockEnd={6} gap={5}>
             <VStack gap={4} hAlign="start" className="site-rise">
               <Text color="secondary" weight="medium">Help center</Text>
